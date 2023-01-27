@@ -71,6 +71,7 @@ void setup() {
   peerInfo.encrypt = false;
   
   // register first peer
+  memset(&peerInfo, 0, sizeof(peerInfo));
   memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");

@@ -6,7 +6,7 @@
 #include <Wire.h> //include Wire.h library
 #include <esp_now.h> //ESP-Wifi comms
 #include <WiFi.h>
-#include <Math.h>
+#include <math.h>
 
 
 /**
@@ -109,6 +109,7 @@ void setup()
   peerInfo.encrypt = false;
 
   // register first peer
+  memset(&peerInfo, 0, sizeof(peerInfo));
   memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");
