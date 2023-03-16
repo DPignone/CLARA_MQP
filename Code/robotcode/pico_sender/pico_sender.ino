@@ -48,6 +48,7 @@ char input[43];
  
 void setup() {
   Serial.begin(9600);
+  delay(100);
 
   //initialize device as wifi station
   WiFi.mode(WIFI_STA);
@@ -104,6 +105,8 @@ void loop() {
       }
       deviceBData = "";
     }
+  }else{
+    //Serial.println("Oopsie! No Serial Available");
   }
 
   delay(5);
