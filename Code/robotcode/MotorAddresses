@@ -1,0 +1,18 @@
+Motor Addresses:
+
+Drive Motors:
+
+Front 1: 		0x01
+Front 2: 		0x02
+Front 3: 		0x03
+Rear 1:  		0x0?
+Rear 2:  		0x0?
+Rear 3:  		0x0?
+
+Winch 1: 		0x0
+Winch 2:
+Winch 3:
+
+Lead Screw Front: 	0x07
+Lead Screw Rear:
+

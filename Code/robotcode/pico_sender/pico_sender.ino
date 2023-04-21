@@ -14,7 +14,7 @@
 
  **********************************************************************************************************************/
 //ESP-NOW Variables
-uint8_t broadcastAddress1[] = {0x24, 0xA1, 0x60, 0x75, 0xB8, 0xE0}; //replace with the MAC Address of your ESP
+uint8_t broadcastAddress1[] = {0x4C, 0x75, 0x25, 0xCA, 0x9F, 0x3C}; //replace with the MAC Address of your ESP
 
 
 typedef struct data_struct_rec { //data struct to receive wifi commands from the external ESP  - must match data struct sent from mainboard
@@ -197,8 +197,11 @@ String interpretData(String data) {
   if (data[8] == '1' && data[4] == '1') { //left bumper and down button - run the lead screw till current dunks on it
     return "24"; 
   }
-  if (data[4] == '1') { //y button - lead screw up
+  if (data[4] == '1' && data[6] == '0') { //y button NO B - front lead screw up
     return "1";
+  }
+  if (data[4] == '1' && data[6] == '1') { //y button WITH B - rear lead screw up
+    return "27";
   }
 
   //second profile 
@@ -223,8 +226,11 @@ String interpretData(String data) {
 //  }
 //  
 
-  if (data[7] == '1') { //A button - lead screw down
+  if (data[7] == '1' && data[6] == '0') { //A button NO B - front lead screw down
     return "4";
+  }
+  if (data[7] == '1' && data[6] == '1') { //A button WITH B - rear lead screw down
+    return "28";
   }
   if (data[8] == '1') { //right bumper
     return "8";
@@ -236,24 +242,24 @@ String interpretData(String data) {
     return "10";
   }
   if (dpadval == 1) { //dpad 1 = all down
-    return "11";
+    //return "11";
   }
   if (dpadval == 2) { //cable 1 down
     return "24";
   }
   if (dpadval == 3) { //cable 1 +2 down
-    return "13";
+    //return "13";
   }
   if (dpadval == 4) { //cable 2 down
     return "25";
   }
   if (dpadval == 5) { //cable 2 + 3 down
-    return "15";
+    //return "15";
   }
   if (dpadval == 6) { //cable 3 down
     return "26";
   } if (dpadval == 7) { //dpad 7 - all up
-    return "17";
+    //return "17";
   }
 
   //  if (rjoyval !=128){  // < 130 && rjoyval > 125) { //stick has been moved

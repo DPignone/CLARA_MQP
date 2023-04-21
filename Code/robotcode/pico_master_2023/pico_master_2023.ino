@@ -8,23 +8,12 @@
 #include <WiFi.h>
 #include <math.h>
 
-
-/**
-    Wheel Addresses
-    1,2,3 - Drive Wheels
-    4,5,6 - Cable Motors
-    7 - Lead Screw Motor
-    8,9,10 - Drive Wheels 2
-    11 - Lead Screw Motor 2
-*/
-
 /**********************************************************************************************************************
 
                                                     VARIABLES + DEFINITIONS
 
 
  **********************************************************************************************************************/
-
 
 //ESP-NOW Variables
 uint8_t broadcastAddress1[] = {0xC8, 0xC9, 0xA3, 0xCF, 0xAE, 0xE8}; //replace with the MAC Address of your ESP
@@ -42,6 +31,31 @@ typedef struct data_struct_rec { //data struct to receive wifi commands from the
 
 data_struct test; //create instance of sending struct to be populated with data
 data_struct_rec myData; //create instance of receiving struct
+
+
+/**
+    Wheel Addresses
+    1,2,3 - Drive Wheels
+    4,5,6 - Cable Motors
+    7 - Lead Screw Motor
+    8,A,B - Drive Wheels 2
+    9 - Lead Screw Motor 2
+*/
+
+//WHEEL ADDRESSES
+int ADDR_DriveFront1 = 0x01;
+int ADDR_DriveFront2 = 0x02;
+int ADDR_DriveFront3 = 0x03;
+int ADDR_DriveRear1 = 0x08;
+int ADDR_DriveRear2 = 0x0A;
+int ADDR_DriveRear3 = 0x0B;
+
+int ADDR_Cable1 = 0x04;
+int ADDR_Cable2 = 0x05;
+int ADDR_Cable3 = 0x06;
+
+int ADDR_LeadScrewFront = 0x07;
+int ADDR_LeadScrewRear = 0x09;
 
 
 //data variables from smart motor drivers
@@ -320,13 +334,11 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   if (commanddata == 1) { //Y button - lead screw up
     driveleadscrewFront(1); /// fix
-    driveleadscrewRear(1);
-    Serial.println("lead screw up");
+    Serial.println("front lead screw up");
   }
   else if (commanddata == 4) { //A button - lead screw down
     driveleadscrewFront(2); /// fix
-    driveleadscrewRear(2);
-    Serial.println("lead screw down");
+    Serial.println("front lead screw down");
 
   }
   else if (commanddata == 2) { //X button - send data back from all motors
@@ -338,6 +350,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     requestData(0x05, 4);
     requestData(0x06, 4);
     requestData(0x07, 4);
+    requestData(0x08, 4);
+    requestData(0x09, 4);
+    requestData(0x0A, 4);
+    requestData(0x0B, 4);
     invCableKin(l1, l2, l3); //do the inv kinematics i guess
   }
 
@@ -347,9 +363,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   */
 
   else if (commanddata == 10) { //dpad = 0 - home
-    Serial.println("homing cables");
+    //Serial.println("homing cables");
     drivecables(0, 0, 0);
     driveFront(0);
+    driveRear(0);
     driveleadscrewFront(0);
     driveleadscrewRear(0);
     //this will be something based off of current sensors later i imagine
@@ -420,20 +437,14 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     driveFront(11);
     driveRear(11);
   }
-  else if (commanddata == 23) {
-    Serial.println("close lead screw w/ current");
-    driveleadscrewFront(3);
-    driveleadscrewRear(3);
+  else if (commanddata == 27) {
+    Serial.println("rear lead screw up");
+    driveleadscrewRear(2);
   }
-  else if (commanddata == 24) {
-    Serial.println("open lead screw w/ current");
-    driveleadscrewFront(4);
-    driveleadscrewRear(4);
+  else if (commanddata == 28) {
+    Serial.println("rear lead screw down");
+    driveleadscrewRear(1);
   }
-//  else if (commanddata == 25){
-//    drivecables(0,0,14);
-//    Serial.println("pid position test"); 
-//  }
   //brake motors
   else if (commanddata == 0) { //brake all motors/do nothing
     driveFront(0);
@@ -468,8 +479,8 @@ void driveFront(int speed) {
 
 void driveRear(int speed) {
   sendMsg(0x08, speed);
-  sendMsg(0x09, speed);
   sendMsg(0x0A, speed);
+  sendMsg(0x0B, speed);
 }
 
 /**
@@ -498,9 +509,9 @@ void driveleadscrewFront(int speed) {
 
 void driveleadscrewRear(int speed){
   if(speed == 0){
-    sendMsg(0x0B, 0); //manual stop
+    sendMsg(0x09, 0); //manual stop
   }else{
-    sendMsg(0x0B, speed);
+    sendMsg(0x09, speed);
   }
 }
 
